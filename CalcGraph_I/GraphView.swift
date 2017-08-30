@@ -13,6 +13,7 @@ class GraphView: UIView {
 
     // public API
     
+    // scale is at times a denominator and therefore should never be allowed to be zero....
     var scale: CGFloat = 1.0 { didSet { setNeedsDisplay() } }
     
     @IBInspectable
@@ -30,6 +31,8 @@ class GraphView: UIView {
     
     var maxPoints: Int? { didSet { setNeedsDisplay() } }
     
+    
+    // graphSizeX and graphSizeY assume superview is ViewController.view
     var graphSizeX: CGFloat? {
         return self.superview?.bounds.maxX
     }

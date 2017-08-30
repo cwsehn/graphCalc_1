@@ -38,7 +38,8 @@ class ViewController: UIViewController {
     var modelCalculatedYValue: CGFloat? {
         if graphView.xCoordinate != nil {
             graphView.calculateYValueRange()
-            let tempY: CGFloat = (graphView.xCoordinate!) * (graphView.xCoordinate!)
+           // let tempY: CGFloat = (graphView.xCoordinate!) * (graphView.xCoordinate!)
+            let tempY: CGFloat = 10 * sin(graphView.xCoordinate!)
             if tempY > graphView.minYValue! && tempY < graphView.maxYValue! {
                 return tempY
             }
@@ -57,6 +58,9 @@ class ViewController: UIViewController {
                 graphView.convertGraphPointsToXCoordinate(graphPoint: x)
                 if modelCalculatedYValue != nil {
                     graphView.createPointFromCoordinate(graphPointX: x, yValue: modelCalculatedYValue!)
+                } else {
+                    graphView.pathStart = true
+                    continue
                 }
                 switch graphView.pathStart {
                 case true:
@@ -68,21 +72,17 @@ class ViewController: UIViewController {
                     path.addLine(to: graphView.pathPoint!)
                 }
             }
+            
             path.lineWidth = graphView.pathWidth
             graphView.equationPath = path
         }
     }
     
-
     
     func moveOrigin (byReactingTo tapGesture: UITapGestureRecognizer) {
         if tapGesture.state == .ended {
             graphView.axesOrigin = tapGesture.location(in: graphView)
             plotGraph()
-            // numberOfGraphPoints()
-            // convertGraphPointsToXCoordinate(graphPoint: 0)
-            // calculateYValueRange()
-            // convertYCoordinateToGraphPoint(yCoordinate: -100)
         }
     }
     
@@ -108,17 +108,15 @@ class ViewController: UIViewController {
             break
         }
     }
-    
-    
+        
     
     func updateUI () {
         graphView.colorizeAxes()
         plotGraph()
     }
-
+ 
 
 }
-
 
 
 
@@ -126,8 +124,8 @@ class ViewController: UIViewController {
 
 @IBOutlet weak var graphView: GraphView! {
     didSet {
-        let tapHandler = #selector(moveOrigin(byReactingTo:))
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: tapHandler)
+        let tapHandler = #selector(GraphView.moveOrigin(byReactingTo:))
+        let tapRecognizer = UITapGestureRecognizer(target: graphView, action: tapHandler)
         tapRecognizer.numberOfTapsRequired = 2
         graphView.addGestureRecognizer(tapRecognizer)
         
